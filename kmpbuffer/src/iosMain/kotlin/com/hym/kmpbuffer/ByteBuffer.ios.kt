@@ -778,6 +778,12 @@ actual fun ByteBuffer.rewind(): ByteBuffer {
     return this.rewind() as ByteBuffer
 }
 
+actual fun ByteBuffer.release() {
+    if (this is DirectByteBuffer) {
+        this.release()
+    }
+}
+
 actual fun allocateDirectByteBuffer(capacity: Int): ByteBuffer {
     return DirectByteBuffer.allocate(capacity)
 }

@@ -51,6 +51,8 @@ actual fun ByteBuffer.rewind(): ByteBuffer {
     return this.rewind() as ByteBuffer
 }
 
+actual fun ByteBuffer.release() = Unit
+
 actual fun allocateDirectByteBuffer(capacity: Int): ByteBuffer {
     return ByteBuffer.allocateDirect(capacity)
 }

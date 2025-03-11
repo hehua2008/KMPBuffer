@@ -670,6 +670,11 @@ expect fun ByteBuffer.flip(): ByteBuffer
 expect fun ByteBuffer.rewind(): ByteBuffer
 
 /**
+ * Releases the native direct memory created by this buffer.
+ */
+expect fun ByteBuffer.release()
+
+/**
  * Allocates a new direct byte buffer with off-heap storage.
  *
  * ### Buffer Initial State:
@@ -679,6 +684,8 @@ expect fun ByteBuffer.rewind(): ByteBuffer
  * - Byte order: [BigEndianOrder]
  * - Backing array: May not exist (check via [ByteBuffer.hasArray])
  * - Elements: Zero-initialized
+ *
+ * **Note: After using this buffer, you need to manually call the release() function to release native memory!**
  *
  * @param capacity Buffer storage capacity in bytes (must be ≥ 0)
  * @throws IllegalArgumentException If [capacity] is negative

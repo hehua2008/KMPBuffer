@@ -13,6 +13,27 @@ import kotlin.test.assertTrue
  */
 class HeapByteBufferTest {
     @Test
+    fun testReadmeExample() {
+        val buffer = allocateHeapByteBuffer(1024)
+
+        buffer.putInt(42)
+        buffer.putDouble(3.14159)
+        val strBytes = "Hello".encodeToByteArray()
+        buffer.put(strBytes, 0, strBytes.size)
+
+        buffer.flip()
+
+        val intValue = buffer.getInt()
+        val doubleValue = buffer.getDouble()
+        val byteArray = ByteArray(buffer.remaining()) { buffer.get() }
+        val str = byteArray.decodeToString()
+
+        assertEquals(42, intValue)
+        assertEquals(3.14159, doubleValue)
+        assertEquals("Hello", str)
+    }
+
+    @Test
     fun testAllocate() {
         val buffer = HeapByteBuffer.allocate(10)
         assertEquals(10, buffer.capacity())
@@ -449,6 +470,27 @@ class HeapByteBufferTest {
         val array = byteArrayOf(1, 2, 3)
         val buffer = HeapByteBuffer.wrap(array).asReadOnlyBuffer()
         assertFailsWith<ReadOnlyBufferException> { buffer.put(1) }
+    }
+
+    @Test
+    fun testReadmeExampleLittleEndian() {
+        val buffer = allocateHeapByteBuffer(1024).order(ByteOrder.LittleEndian)
+
+        buffer.putInt(42)
+        buffer.putDouble(3.14159)
+        val strBytes = "Hello".encodeToByteArray()
+        buffer.put(strBytes, 0, strBytes.size)
+
+        buffer.flip()
+
+        val intValue = buffer.getInt()
+        val doubleValue = buffer.getDouble()
+        val byteArray = ByteArray(buffer.remaining()) { buffer.get() }
+        val str = byteArray.decodeToString()
+
+        assertEquals(42, intValue)
+        assertEquals(3.14159, doubleValue)
+        assertEquals("Hello", str)
     }
 
     @Test

@@ -15,6 +15,29 @@ import kotlinx.cinterop.nativeHeap
  */
 class DirectByteBufferTest {
     @Test
+    fun testReadmeExample() {
+        val buffer = allocateDirectByteBuffer(1024)
+
+        buffer.putInt(42)
+        buffer.putDouble(3.14159)
+        val strBytes = "Hello".encodeToByteArray()
+        buffer.put(strBytes, 0, strBytes.size)
+
+        buffer.flip()
+
+        val intValue = buffer.getInt()
+        val doubleValue = buffer.getDouble()
+        val byteArray = ByteArray(buffer.remaining()) { buffer.get() }
+        val str = byteArray.decodeToString()
+
+        assertEquals(42, intValue)
+        assertEquals(3.14159, doubleValue)
+        assertEquals("Hello", str)
+
+        buffer.release()
+    }
+
+    @Test
     fun testAllocate() {
         val buffer = DirectByteBuffer.allocate(10)
         assertEquals(10, buffer.capacity())
@@ -511,6 +534,29 @@ class DirectByteBufferTest {
         val buffer = DirectByteBuffer.wrap(cArrayPointer, array.size).asReadOnlyBuffer()
         assertFailsWith<ReadOnlyBufferException> { buffer.put(1) }
         nativeHeap.free(cArrayPointer)
+    }
+
+    @Test
+    fun testReadmeExampleLittleEndian() {
+        val buffer = allocateDirectByteBuffer(1024).order(ByteOrder.LittleEndian)
+
+        buffer.putInt(42)
+        buffer.putDouble(3.14159)
+        val strBytes = "Hello".encodeToByteArray()
+        buffer.put(strBytes, 0, strBytes.size)
+
+        buffer.flip()
+
+        val intValue = buffer.getInt()
+        val doubleValue = buffer.getDouble()
+        val byteArray = ByteArray(buffer.remaining()) { buffer.get() }
+        val str = byteArray.decodeToString()
+
+        assertEquals(42, intValue)
+        assertEquals(3.14159, doubleValue)
+        assertEquals("Hello", str)
+
+        buffer.release()
     }
 
     @Test
